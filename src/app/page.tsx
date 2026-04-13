@@ -44,10 +44,16 @@ export default function Home() {
         body: JSON.stringify({ messages: [...messages, userMessage] }),
       });
 
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || `Server error: ${response.status}`);
+      }
+
       const data = await response.json();
       const { output } = data;
 
       setMessages((prev) => [...prev, output]);
+
     } catch (error) {
       console.error("Error calling AI:", error);
       setMessages((prev) => [
